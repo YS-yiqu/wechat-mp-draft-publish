@@ -1,0 +1,23 @@
+# 构建产物与本地临时文件
+dist/
+build/
+*.zip
+
+# 依赖与缓存
+node_modules/
+__pycache__/
+*.pyc
+
+# 凭据：绝不入库
+.env
+.env.*
+*.credentials
+*.credentials.json
+*secret*
+*token*
+!scripts/*token*
+
+# 系统文件
+.DS_Store
+Thumbs.db
+desktop.ini

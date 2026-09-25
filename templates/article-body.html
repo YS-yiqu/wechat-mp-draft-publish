@@ -1,0 +1,24 @@
+<!--
+  WeChat draft body starter.
+  HARD LIMIT: must stay under 2048 bytes (WeChat rejects `content` >= 2KB).
+  This starter is ~380 bytes, leaving ~1600 for your text.
+
+  Style rules that matter:
+  - Use LIGHT inline styles only. Heavy styling is what blows the 2KB budget.
+  - Every style must be inline (style="..."), not a <style> block — WeChat strips
+    <style>, <script>, and class-based rules.
+  - External <img src="http://..."> is STRIPPED unless the URL comes from the
+    上传图文消息内图片 interface. For a text article, prefer no images at all.
+  - Verify size before publishing:
+      [System.IO.File]::ReadAllBytes("article-body.html").Length
+-->
+<section style="font-size:16px;line-height:1.85;color:#2b2b2b;letter-spacing:.02em">
+<p>这里是开篇导语，用一两句话交代这篇文章解决什么问题。</p>
+
+<h3 style="font-size:17px;font-weight:700;color:#111;margin:22px 0 10px">一、小节标题</h3>
+<p>正文段落。行内代码用 <code style="background:#f2f4f8;padding:1px 5px;border-radius:3px">code</code> 这种轻量写法。</p>
+<pre style="background:#f6f8fa;border-left:3px solid #4d7cfe;padding:10px 12px;font-size:14px;overflow-x:auto">需要突出的命令或代码块</pre>
+
+<h3 style="font-size:17px;font-weight:700;color:#111;margin:22px 0 10px">二、小节标题</h3>
+<p>小结或行动指引。</p>
+</section>

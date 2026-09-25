@@ -1,0 +1,59 @@
+name: release
+
+# 推 v* 标签即打包技能目录并发 Release；也可手动触发只做构建。
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+
+permissions:
+  contents: write          # 不加这行，gh release create 会 403
+
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: 语法自检（Node 脚本可解析）
+        run: |
+          for f in scripts/*.mjs; do
+            node --check "$f"
+            echo "ok: $f"
+          done
+
+      - name: 回归测试
+        run: |
+          node scripts/test-40164.mjs
+          node scripts/test-structure.mjs
+
+      - name: 校验 SKILL.md frontmatter
+        run: |
+          python3 - <<'PY'
+          import re, sys, pathlib
+          text = pathlib.Path('SKILL.md').read_text(encoding='utf-8')
+          m = re.match(r'^---\n(.*?)\n---\n', text, re.S)
+          assert m, 'SKILL.md 缺少 frontmatter'
+          fm = m.group(1)
+          for key in ('name:', 'slug:', 'version:', 'description:'):
+              assert key in fm, f'frontmatter 缺少 {key}'
+          print('frontmatter ok')
+          PY
+
+      - name: 打包技能目录
+        run: |
+          TAG="${GITHUB_REF_NAME:-dev}"
+          mkdir -p dist
+          zip -r "dist/wechat-mp-draft-publish-${TAG}.zip" \
+            SKILL.md README.md scripts references templates -x '*.DS_Store'
+          sha256sum dist/*.zip > dist/SHA256.txt
+          cat dist/SHA256.txt
+
+      - name: 发布到 Release
+        if: startsWith(github.ref, 'refs/tags/')
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "${GITHUB_REF_NAME}" dist/*.zip dist/SHA256.txt \
+            --title "${GITHUB_REF_NAME}" \
+            --notes "技能包（SKILL.md 与 scripts/ 同级，解压后整个目录放进 skills 根即可）。校验值见 SHA256.txt。"

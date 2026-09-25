@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<!--
+  WeChat cover starter — exactly 900x383 (2.35:1, no cropping needed).
+  Render with headless Chrome:
+    chrome --headless=old --disable-gpu --hide-scrollbars \
+      --force-device-scale-factor=1 --window-size=900,383 \
+      --screenshot="cover.png" "file:///<abs path to this file>"
+  Then ALWAYS read the PNG back with read_image and confirm it is 900x383 —
+  a wrong height silently crops the design.
+
+  Design notes: dark-tech palette, one accent system, a large left-aligned
+  title. Keep the title to <= 8 characters per line so it stays legible at
+  phone size. Replace the terminal block's contents with the article's own
+  commands when the topic differs.
+-->
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html, body { width:900px; height:383px; overflow:hidden; }
+  body { font-family:"Microsoft YaHei UI","Microsoft YaHei","PingFang SC",sans-serif; background:#05070f; -webkit-font-smoothing:antialiased; }
+  .stage { position:relative; width:900px; height:383px; overflow:hidden;
+    background:
+      radial-gradient(120% 150% at 88% 8%, rgba(56,120,255,.34) 0%, rgba(56,120,255,0) 55%),
+      radial-gradient(90% 120% at 6% 96%, rgba(0,214,255,.20) 0%, rgba(0,214,255,0) 58%),
+      linear-gradient(135deg,#070c1c 0%,#0a1330 45%,#060a18 100%); }
+  .grid { position:absolute; inset:0;
+    background-image:linear-gradient(rgba(120,175,255,.075) 1px,transparent 1px),linear-gradient(90deg,rgba(120,175,255,.075) 1px,transparent 1px);
+    background-size:36px 36px;
+    mask-image:radial-gradient(115% 105% at 30% 45%,#000 30%,transparent 88%);
+    -webkit-mask-image:radial-gradient(115% 105% at 30% 45%,#000 30%,transparent 88%); }
+  .orb { position:absolute; border-radius:50%; filter:blur(46px); opacity:.5; }
+  .orb-a { width:260px; height:260px; right:-60px; top:-90px; background:#2f6bff; }
+  .orb-b { width:200px; height:200px; left:-70px; bottom:-80px; background:#00c2ff; opacity:.34; }
+  .vignette { position:absolute; inset:0; z-index:2;
+    background:radial-gradient(78% 110% at 84% 45%,rgba(3,6,16,.62) 0%,rgba(3,6,16,.28) 45%,rgba(3,6,16,0) 72%); }
+  .accent-bar { position:absolute; left:0; top:0; bottom:0; width:6px;
+    background:linear-gradient(180deg,#35d6ff 0%,#3f7bff 55%,#8a5cff 100%); box-shadow:0 0 22px rgba(63,123,255,.85); }
+  .content { position:relative; z-index:3; display:flex; align-items:center; height:100%; padding:0 40px 0 52px; gap:22px; }
+  .left { width:470px; flex:0 0 470px; }
+  .eyebrow { display:inline-flex; align-items:center; gap:7px; padding:5px 12px 5px 9px;
+    border:1px solid rgba(90,160,255,.42); border-radius:999px; background:rgba(40,95,220,.18);
+    color:#8fc4ff; font-size:11.5px; letter-spacing:.11em; font-weight:600; margin-bottom:15px; }
+  .dot { width:6px; height:6px; border-radius:50%; background:#35d6ff; box-shadow:0 0 8px #35d6ff; }
+  h1 { font-size:45px; line-height:1.1; font-weight:800; color:#fff; text-shadow:0 3px 26px rgba(30,110,255,.55); }
+  h1 .grad { background:linear-gradient(96deg,#4fd8ff 0%,#6fa2ff 48%,#a97dff 100%);
+    -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; }
+  .sub { margin-top:13px; font-size:14.5px; line-height:1.6; color:#a9bbdc; max-width:386px; }
+  .sub b { color:#dce8ff; font-weight:600; }
+  .tags { margin-top:17px; display:flex; gap:8px; flex-wrap:wrap; }
+  .tag { font-size:11.5px; color:#9dc0f0; padding:4.5px 11px; border-radius:6px;
+    background:rgba(255,255,255,.055); border:1px solid rgba(140,180,255,.20); }
+  .tag.hot { color:#06121f; background:linear-gradient(96deg,#4fd8ff,#6fa2ff); border-color:transparent; font-weight:700; }
+  .right { flex:1 1 auto; display:flex; justify-content:flex-end; }
+  .term { width:322px; border-radius:12px; overflow:hidden; background:rgba(9,15,32,.86);
+    border:1px solid rgba(105,150,235,.30);
+    box-shadow:0 22px 50px rgba(0,0,0,.62), 0 0 0 1px rgba(255,255,255,.03) inset, 0 0 42px rgba(45,110,255,.22); }
+  .term-bar { height:27px; display:flex; align-items:center; gap:6px; padding:0 11px;
+    background:linear-gradient(180deg,rgba(38,52,88,.95),rgba(20,30,56,.95)); border-bottom:1px solid rgba(105,150,235,.20); }
+  .tb-dot { width:9px; height:9px; border-radius:50%; }
+  .tb-r{background:#ff5f57}.tb-y{background:#febc2e}.tb-g{background:#28c840}
+  .term-title { margin-left:8px; font-family:Consolas,"Courier New",monospace; font-size:10.5px; color:#8ea6cf; letter-spacing:.05em; }
+  .term-body { padding:13px 15px 16px; font-family:Consolas,"Courier New",monospace; font-size:11.6px; line-height:1.85; color:#cfe0ff; }
+  .ln { white-space:nowrap; }
+  .ps1{color:#35d6ff}.cmd{color:#fff;font-weight:600}.cmt{color:#5f7099}.ok{color:#3ddc84}.warn{color:#ffd166}
+  .caret { display:inline-block; width:7px; height:12px; background:#4fd8ff; vertical-align:-1px; box-shadow:0 0 8px rgba(79,216,255,.9); }
+  .wm { position:absolute; right:22px; bottom:14px; z-index:4; font-size:10.5px; letter-spacing:.22em; color:rgba(150,185,240,.5); font-weight:600; }
+  .topline { position:absolute; top:0; left:0; right:0; height:1px;
+    background:linear-gradient(90deg,transparent,rgba(90,180,255,.75),transparent); }
+</style>
+</head>
+<body>
+  <div class="stage">
+    <div class="grid"></div>
+    <div class="orb orb-a"></div>
+    <div class="orb orb-b"></div>
+    <div class="vignette"></div>
+    <div class="accent-bar"></div>
+    <div class="topline"></div>
+
+    <div class="content">
+      <div class="left">
+        <div class="eyebrow"><span class="dot"></span>栏目名</div>
+        <h1>主标题<br><span class="grad">副标题</span></h1>
+        <div class="sub">一句话说清这篇文章解决什么问题，<br>第二行补充关键信息。</div>
+        <div class="tags">
+          <span class="tag hot">标签一</span>
+          <span class="tag">标签二</span>
+          <span class="tag">标签三</span>
+        </div>
+      </div>
+
+      <div class="right">
+        <div class="term">
+          <div class="term-bar">
+            <span class="tb-dot tb-r"></span><span class="tb-dot tb-y"></span><span class="tb-dot tb-g"></span>
+            <span class="term-title">C:\&gt; cmd</span>
+          </div>
+          <div class="term-body">
+            <div class="ln"><span class="ps1">C:\&gt;</span> <span class="cmd">第一条命令</span></div>
+            <div class="ln"><span class="ok">√</span> <span class="cmt">执行结果</span></div>
+            <div class="ln"><span class="ps1">C:\&gt;</span> <span class="cmd">第二条命令</span></div>
+            <div class="ln"><span class="warn">➜</span> <span class="cmt">输出信息</span></div>
+            <div class="ln"><span class="ps1">C:\&gt;</span> <span class="caret"></span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="wm">公众号名称</div>
+  </div>
+</body>
+</html>
