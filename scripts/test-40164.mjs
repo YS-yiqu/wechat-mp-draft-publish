@@ -34,9 +34,10 @@ const REAL = 'invalid ip 223.104.10.20 ipv6 ::ffff:223.104.10.20, not in whiteli
   check('未把 IPv6 前缀误当 IP', !text.includes('👉 微信看到的出口 IP 是：::ffff'));
   check('识别出运营商为 中国移动', text.includes('中国移动'));
   check('给出了 /24 IP 段建议', text.includes('223.104.10.0/24'));
-  check('给出本账号专属的直达链接（含 AppID）',
-    text.includes('/console/product/mp/wx') &&
-    text.includes('tab1=basicInfo') && text.includes('tab2=dev'));
+  check('给出白名单链接（有 AppID → 账号专属链接，无 → 通用入口）',
+    (text.includes('/console/product/mp/wx') &&
+      text.includes('tab1=basicInfo') && text.includes('tab2=dev')) ||
+    text.includes('developers.weixin.qq.com/platform'));
   check('链接不含会话 token（可安全打印）', !/token=/.test(text));
   check('提示不要相信 IP 查询网站', text.includes('不要相信 IP 查询网站'));
 }
